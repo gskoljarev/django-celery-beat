@@ -1,3 +1,21 @@
+Forked with fixes in relation to https://github.com/celery/django-celery-beat/issues/80::
+
+    MySQL
+    Django==1.11.13
+    celery==4.1.1
+    django-celery-beat==1.1.1
+
+
+To be used with custom Celery class::
+
+    class MyCelery(celery.Celery):
+        ...
+        def now(self):
+            """Return the current time and date as a datetime."""
+            from datetime import datetime
+            return datetime.now()
+
+
 =====================================================================
  Database-backed Periodic Tasks
 =====================================================================

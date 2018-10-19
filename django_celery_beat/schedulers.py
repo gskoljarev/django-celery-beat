@@ -22,7 +22,7 @@ from .models import (
     CrontabSchedule, IntervalSchedule,
     SolarSchedule,
 )
-from .utils import make_aware
+from .utils import make_aware, is_aware
 
 try:
     from celery.utils.time import is_naive
@@ -100,10 +100,10 @@ class ModelEntry(ScheduleEntry):
 
     def _default_now(self):
         now = self.app.now()
-        # The PyTZ datetime must be localised for the Django-Celery-Beat
-        # scheduler to work. Keep in mind that timezone arithmatic
-        # with a localized timezone may be inaccurate.
-        return now.tzinfo.localize(now.replace(tzinfo=None))
+        if is_aware(now):
+            return now.replace(tzinfo=None)  
+        else:
+            return now
 
     def __next__(self):
         self.model.last_run_at = self.app.now()
